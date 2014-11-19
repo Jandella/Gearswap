@@ -3,12 +3,14 @@ Gearswap
 
 My gearswap file, with libraries
 
-* **BLM.lua:** this file contains the gearswap for my blm.
+**BLM.lua:** this file contains the gearswap for my blm.
 
-* **WHM.lua:** this file contains the gearswap for my whm.
+**WHM.lua:** this file contains the gearswap for my whm.
 
-* **generate_gearcollectorfile.lua:** this file contains the function to create an xml spellcast-like for the use of the plugin gearcollector
-Include the file with this line of code `include('generate_gearcollectorfile.lua')` in `get_sets()`
+**generate_gearcollectorfile.lua:** this file contains the function to create an xml spellcast-like for the use of the plugin gearcollector
+
+Include the file with this line of code `include('generate_gearcollectorfile.lua')` in `get_sets()`.
+
 To use the function, put this code in the <code>function self_command(command)</code> like this:
 ```
 if command == 'gearcollector' then
