@@ -7,6 +7,8 @@ My gearswap file, with libraries
 
 **WHM.lua:** this file contains the gearswap for my whm.
 
+**MNK.lua:** this file contains the gearswap for mnk.
+
 **generate_gearcollectorfile.lua:** this file contains the function to create an xml spellcast-like for the use of the plugin gearcollector
 
 Include the file with this line of code `include('generate_gearcollectorfile.lua')` in `get_sets()`.
