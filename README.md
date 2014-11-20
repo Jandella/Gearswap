@@ -18,4 +18,4 @@ if command == 'gearcollector' then
 end
 ```
 Then, to use it ingame, just type `//gs c gearswap`.
-The xml file will be created with name <playername>_<playercurrentjob>.xml into Gearswap folder
+The xml file will be created with name [playername]_[playercurrentjob].xml into Gearswap folder
