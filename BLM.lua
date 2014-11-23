@@ -11,6 +11,10 @@ function get_sets()
 	-- MIDCAST SETS
 	sets.midcast = {}
 	sets.midcast['Elemental Magic'] = {}
+	sets.midcast['Elemental Magic'].MAB = {main="Baqil Staff",sub="Mephitis Grip",range=empty, ammo="Memoria Sachet",
+        head="Hagondes Hat",neck="Stoicheion Medal",ear1="Friomisi Earring",ear2="Hecate's Earring",
+        body="Hagondes Coat +1",hands="Otomi Gloves",ring1="Diamond Ring",ring2="Acumen Ring",
+        back="Toro Cape",waist="Aswang Sash",legs="Hagondes Pants +1",feet="Nares Clogs"}
 
 	sets.midcast['Dark Magic'] = {main="Baqil Staff",sub="Mephitis Grip",range=empty, ammo="Memoria Sachet",
         head="Appetence Crown",neck="Aesir Torque",ear1="Goetia Earring",ear2="Loquacious Earring",
