@@ -29,6 +29,8 @@ function get_sets()
     -- check cursna
     sets.midcast["Healing Magic"].Cursna = set_combine(sets.precast.FastCast, {head="Orison Cap +2", body="Orison Bliaud +2", 
     	hands="Hieros Mittens", ring1="Ephedra Ring", ring2="Sirona's Ring",	back="Mending Cape", legs="Orsn. Pantaln. +2", feet="Gende. Galoshes"})
+    
+    sets.midcast["Healing Magic"].na = set_combine(sets.precast.FastCast, {head="Orison Cap +2"})
 
     sets.midcast['Enhancing Magic'] = {neck="Colossus's Torque",
 		hands="Augur's Gloves", back="Merciful Cape", legs="Portent Pants", feet="Orsn. Duckbills +2"}
@@ -170,7 +172,7 @@ function conditional_equip(spell,set)
 		elseif spell.english == 'Cursna' then
 			equip(sets.midcast[spell.skill].Cursna)
 		elseif string.match(spell.english, '^.*na') then
-			equip({head="Orison Cap +2"})
+			equip(sets.midcast["Healing Magic"].na)
 		end
 	elseif NoSkillBuff[spell.english] then
 		equip(sets.precast.FastCast)
