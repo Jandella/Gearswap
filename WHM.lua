@@ -8,7 +8,10 @@ function get_sets()
 	-- PRECAST SETS
 	sets.precast = {}
 	sets.precast.FastCast = {head="Nahtirah Hat", neck="Orison locket", ear1="Enchntr. Earring +1", ear2="Loquacious Earring",
-							body="Hedera Cotehardie", hands="Gendewitha Gages", waist="Witful Belt", legs="Orvail Pants", feet="Augur's Gaiters"}
+							body="Hedera Cotehardie", hands="Gendewitha Gages", waist="Witful Belt", legs="Artsieq Hose", feet="Augur's Gaiters"}
+	-- calculated by hand from equip
+	gear_fastcast = 5 + 2 + 2 + 7 + 3 + 5 + 3
+	total_fastcast = gear_fastcast
 
 	-- MIDCAST SETS
 	sets.midcast = {}
@@ -16,12 +19,12 @@ function get_sets()
 	sets.midcast['Healing Magic'] = {}
 
 	sets.midcast['Healing Magic'].Cure = {main="Tamaxchi",sub="Genbu's Shield", ammo="Incantor Stone",
-        head="Gende. Caubeen", neck="Colossus's Torque",ear1="Orison Earring",ear2="Loquac. Earring",
+        head="Gende. Caubeen +1", neck="Colossus's Torque",ear1="Orison Earring",ear2="Loquac. Earring",
         body="Orison Bliaud +2",hands="Bokwus Gloves",ring1="Ephedra Ring",ring2="Sirona's Ring",
         back="Medala Cape",waist="Witful Belt",legs="Orsn. Pantaln. +2",feet="Rubeus Boots"}
 
-    sets.midcast['Healing Magic'].Curaga = set_combine(sets.midcast['Healing Magic'].Cure, {body="Gendewitha Bliaut", ring1="Karka Ring",
-    	feet="Nares Clogs"})
+    sets.midcast['Healing Magic'].Curaga = set_combine(sets.midcast['Healing Magic'].Cure, {body="Gende. Bliaut +1", ring1="Karka Ring",
+    	feet="Gende. Galoshes"})
 
     -- check cursna
     sets.midcast["Healing Magic"].Cursna = set_combine(sets.precast.FastCast, {head="Orison Cap +2", body="Orison Bliaud +2", 
@@ -36,11 +39,11 @@ function get_sets()
 		hands="Augur's Gloves", ring1="Karka Ring", ring2="Sirona's Ring", back="Merciful Cape", waist="Witful Belt", legs="Cleric's Pantaln.",
 		feet="Orsn. Duckbills +2"}
 
-	sets.midcast['Enhancing Magic'].Regen = {body="Cleric's briault", hands="Orison Mitts +2"}
+	sets.midcast['Enhancing Magic'].Regen = {main="Bolelabunga",body="Piety Briault", hands="Orison Mitts +2"}
 
 	sets.midcast['Enfeebling Magic'] = {main="Baqil Staff",sub="Mephitis Grip", ammo="Memoria Sachet",
         head="Buremte Hat",neck="Enfeebling Torque",ear1="Lifestorm Earring",ear2="Psystorm Earring",
-        body="Nares Saio",hands="Rubeus Gloves",ring1="Sangoma Ring",ring2="Perception Ring",
+        body="Ischemia Chasu.",hands="Rubeus Gloves",ring1="Sangoma Ring",ring2="Perception Ring",
         back="Refraction Cape",waist="Aswang Sash",legs="Portent Pants",feet="Rubeus Boots"}
 
     -- TODO
@@ -53,10 +56,10 @@ function get_sets()
     sets.midcast['Dark Magic'].Stun = set_combine(sets.precast.FastCast, {main="Apamajas II",sub="Mephitis Grip"})
 
     -- AFTERCAST SETS
-    sets.Idle = {main="Owleyes",sub="Genbu's Shield", ammo="Memoria Sachet",
+    sets.Idle = {main="Bolelabunga",sub="Genbu's Shield", ammo="Memoria Sachet",
         head="Wivre Hairpin",neck="Twilight Torque",
-        body="Orison Bliaud +2",hands="Serpentes Cuffs",ring1="Dark Ring",ring2="Dark Ring",
-        back="Umbra Cape",waist="Fucho-no-Obi",legs="Nares Trews",feet="Serpentes Sabots"}
+        body="Ischemia Chasu.",hands="Serpentes Cuffs",ring1="Dark Ring",ring2="Dark Ring",
+        back="Umbra Cape",waist="Fucho-no-Obi",legs="Nares Trews",feet="Herald's gaiters"}
 
     -- JA SETS
 
@@ -74,14 +77,14 @@ function get_sets()
 	sets.Engaged = {}
 	sets.Engaged.CLUB = {main="Tamaxchi", sub="Genbu's Shield"}
 	sets.Engaged.STAFF = {main="Baqil Staff", sub="Mephitis Grip"}
-
+	update_fastcast()
 
 end
 
 function precast(spell)
 	if spell.action_type == 'Magic' then
 		--if spell cast time is < 3 will equip standard set, else will equip fastcast set
-		if spell.cast_time < 3 then
+		if calculate_castingtime(spell) < 3 then
 			-- [DEBUG] windower.add_to_chat(8, '---- Ramo if di precast, '..spell.english..' ha casting time '..spell.cast_time..' ----')
 			conditional_equip(spell, sets.midcast[spell.skill])
 			do_midcast = false
@@ -127,9 +130,13 @@ end
 -- Called when a player gains or loses a status.
 -- status == buff gained or lost
 -- gain == true if the buff was gained, false if it was lost.
---function buff_change(status,gain)
-    
---end
+function buff_change(status,gain)
+	update_fastcast(gain)    
+end
+
+function sub_job_change(new, old)
+	update_fastcast()
+end
 
 function self_command(command)
     if command == 'gearcollector' then
@@ -162,9 +169,11 @@ function conditional_equip(spell,set)
 			equip(sets.midcast[spell.skill].Curaga)
 		elseif spell.english == 'Cursna' then
 			equip(sets.midcast[spell.skill].Cursna)
-		elseif string.match(spell.english, '*na') then
+		elseif string.match(spell.english, '^.*na') then
 			equip({head="Orison Cap +2"})
 		end
+	elseif NoSkillBuff[spell.english] then
+		equip(sets.precast.FastCast)
 	elseif spell.skill=="Enhancing Magic" then
 		if string.match(spell.english, "Bar*") then
 			equip(sets.midcast[spell.skill].Bar)
@@ -173,10 +182,41 @@ function conditional_equip(spell,set)
 		elseif spell.english == 'Stoneskin' then
 			equip(sets.midcast[spell.skill].Stoneskin)
 		end
-	elseif NoSkillBuff[spell.english] then
-		equip(sets.precast.FastCast)
 	else
 		equip(set)
+	end
+end
+
+--check current subjob and light arts to update the current value of fastcast.
+function update_fastcast(gain)
+	-- body
+	if(player.sub_job == 'RDM') then
+		total_fastcast = gear_fastcast + 15
+	elseif (player.sub_job == 'SCH') then
+		if (gain and buffactive['Light Arts']) then
+			total_fastcast = gear_fastcast + 10
+		end
+	else
+		total_fastcast = gear_fastcast
+	end
+	--send_command('@input /echo ---- total fastcast '..total_fastcast)
+end
+
+--calculate casting time of the spell.
+--returns the actual casting time based on fastcast and casting time reducion via merit
+function calculate_castingtime(spell)
+	-- body
+	if (spell.action_type == 'Magic') then
+		local curecastingreduction = 0
+		if string.match(spell.english, "Cur*") then
+			curecastingreduction = 20 --from merit
+		end
+		local fastcast = (total_fastcast + curecastingreduction) / 100
+		local totaltimereduction = 1 - fastcast
+		local castingtime = spell.cast_time * totaltimereduction
+		return castingtime
+	else
+		return 1
 	end
 end
 
