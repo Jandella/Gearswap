@@ -6,29 +6,32 @@ function set_gearcollector(set)
 	local myPlayer = windower.ffxi.get_player()
 	local gear_for_collector = {}
 	set_gearcollector_recursive(set, gear_for_collector)
-	local files = require('files')
-	local file = files.new(myPlayer.name.."_"..myPlayer.main_job..".xml")
-	files.create(file)
-	files.append(file, '<?xml version="1.0" ?>\n')
-	files.append(file, '\t<spellcast>\n')
-	files.append(file, '\t\t<sets>\n')
-	files.append(file, '\t\t\t<group default="yes" name="'..myPlayer.main_job..'">\n')
-	files.append(file, '\t\t\t\t<set name="gearcollector">\n')
+	local path = windower.windower_path..'plugins/spellcast/'..myPlayer.name.."_"..myPlayer.main_job..".xml"
+	--send_command('@input /echo ----- '..path)
+	
+	local f = io.open(path,'w+')
+	f:write('<?xml version="1.0" ?>\n')
+	f:write('\t<spellcast>\n')
+	f:write('\t\t<sets>\n')
+	f:write('\t\t\t<group default="yes" name="'..myPlayer.main_job..'">\n')
+	f:write('\t\t\t\t<set name="gearcollector">\n')
 	for k,v in pairs(gear_for_collector) do
 		if k == "empty" then
 			-- do nothing (if you never have something in range slot, like my WHM, there will be
 			-- a slot called empty, we need to skip it)
 		else
-			files.append(file, '\t\t\t\t\t<item>'..k..'</item>\n')
+			f:write('\t\t\t\t\t<item>'..k..'</item>\n')
 		end
 		--windower.add_to_chat(8, k..'\t')
 	end
-	files.append(file, '\t\t\t\t</set>\n')
-	files.append(file, '\t\t\t</group>\n')
-	files.append(file, '\t\t</sets>\n')
-	files.append(file, '\t</spellcast>\n')
-	files.append(file, '</xml>')
-	windower.add_to_chat(8, "Done! Your file ".. myPlayer.name.."_"..myPlayer.main_job..".xml is in the GearSwap folder addon") --TODO: put it in the data folder!
+	f:write('\t\t\t\t</set>\n')
+	f:write('\t\t\t</group>\n')
+	f:write('\t\t</sets>\n')
+	f:write('\t</spellcast>\n')
+	f:write('</xml>')
+	f:flush()
+	f:close()
+	windower.add_to_chat(8, "Done! Your file ".. myPlayer.name.."_"..myPlayer.main_job..".xml is in you spellcast folder")
 end
 
 -- iterate recursively through all the lua set table
