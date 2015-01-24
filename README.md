@@ -20,4 +20,5 @@ if command == 'gearcollector' then
 end
 ```
 Then, to use it ingame, just type `//gs c gearcollector`.
-The xml file will be created with name [playername]_[playercurrentjob].xml into Gearswap folder
+The xml file will be created with name [playername]_[playercurrentjob].xml into default spellcast folder ( `C:/Your/Windower/Folder/plugins/spellcast/` ).
+If exist a file with the same name it will be overwritten.
