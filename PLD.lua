@@ -183,7 +183,7 @@ end
 -- status == buff gained or lost
 -- gain == true if the buff was gained, false if it was lost.
 function buff_change(status,gain)
-    if gan and status == 'Doom' then 
+    if gain and status == 'Doom' then 
         equip(sets.Twilight)
         disable('head','body')
         if debug then
